@@ -12,6 +12,17 @@ class WorkInterval{
 private:
     double left, right;
 public:
+    void interUnion(WorkInterval inter2)
+    {
+        double min = left;
+        double max = right;
+        if(inter2.left < min) min = inter2.left;
+        if(inter2.right > max) max = inter2.right;
+        while(min < max-1){
+            min++;
+            cout << min << "\t";
+        }
+    }
     void interSection(WorkInterval inter2)
     {
         double tmp = inter2.left;
@@ -20,14 +31,14 @@ public:
         while(left < right-1){
             left++;
             inter2.left = tmp;
-            while(inter2.left < inter2.right){
+            while(inter2.left < inter2.right-1){
                 inter2.left++;
                 if(inter2.left == left) cout << left << "\t";
             }
         }
         left = tmpleft;
         right = tmpright;
-
+        inter2.left = tmp;
     }
 
     void print()
@@ -40,22 +51,17 @@ public:
     void setRight(double right){this->right = right;}
     double getRight(double right){return right;}
 
-    WorkInterval() // конструктор по умолчанию интервал (0;0)
-    {
-        this->left = 0; this->right = 0;
-    }
-
-    WorkInterval(double left, double right) // конструктор с параметрами левого и правого конца
+    WorkInterval(double left = 0, double right = 0) // конструктор
     {
         setLeft(left); setRight(right);
     }
 };
-double inputLeftInterval(double left)
+double inputLeftInterval(double left) // ввод левого конца интервала
 {
     cin >> left;
     return left;
 }
-double inputRightInterval(double left, double right)
+double inputRightInterval(double left, double right) // ввод правого конца интервала
 {
     while (true)
     {
@@ -77,7 +83,7 @@ int main()
     printf("|____________________________________________________|\n");
     printf("|     Лабораторная работа номер 2 ( 17 вариант(2) )     |\n");
     printf("|____________________________________________________|\n");
-    while (true)
+    while (true) // главное меню
     {
         printf("\nВведите 1 для запуска и 2 для выхода: ");
         int command;
@@ -109,8 +115,14 @@ int main()
             // операция пересечения интервалов
             cout << "пересечение интервалов: " << endl;
             inter1.interSection(inter2);
+            cout << endl;
+
             // операция объединения интервалов
-            //inter1.interUnion(inter2);
+            cout << "объединение интервалов: " << endl;
+            inter1.interUnion(inter2);
+
+            // вывод пересечения интервалов
+            // вывод объединения интервалов
         }
         else if (command == 2)
             break;
