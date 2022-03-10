@@ -45,24 +45,6 @@ int main() {
     i2.setA(a2);
     i2.setB(b2);
 
-
-    /*
-    std::cout << "Enter the first interval: " << std::endl << "a = ";
-    std::cin >> a1;
-    std::cout << "b = ";
-    std::cin >> b1;
-
-    i1.setA(a1);
-    i1.setB(b1);
-
-    std::cout << "Enter the second interval: " << std::endl << "a = ";
-    std::cin >> a1;
-    std::cout << "b = ";
-    std::cin >> b1;
-
-    i2.setA(a2);
-    i2.setB(b2);*/
-
     i1.print();
     i2.print();
 
