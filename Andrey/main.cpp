@@ -3,7 +3,6 @@
 	номер группы: 6113
 **/
 
-#include <windows.h>
 #include <iostream>
 
 using namespace std;
@@ -12,7 +11,11 @@ class WorkInterval{
 private:
     double left, right;
 public:
-    void interUnion(WorkInterval inter2)
+    void printRes(double var)
+    {
+        cout << var << "\t";
+    }
+    void interUnion(WorkInterval inter2) 
     {
         double min = left;
         double max = right;
@@ -20,7 +23,7 @@ public:
         if(inter2.right > max) max = inter2.right;
         while(min < max-1){
             min++;
-            cout << min << "\t";
+            printRes(min);
         }
     }
     void interSection(WorkInterval inter2)
@@ -33,7 +36,7 @@ public:
             inter2.left = tmp;
             while(inter2.left < inter2.right-1){
                 inter2.left++;
-                if(inter2.left == left) cout << left << "\t";
+                if(inter2.left == left) printRes(left);
             }
         }
         left = tmpleft;
@@ -79,7 +82,6 @@ double inputRightInterval(double left, double right) // ввод правого 
 }
 int main()
 {
-    SetConsoleOutputCP(CP_UTF8); //Задает выходную кодовую страницу,
     cout << "|____________________________________________________|" << endl;
     cout << "|     Лабораторная работа номер 2 ( 17 вариант(2) )     |" << endl;
     cout << "|____________________________________________________|" << endl;
@@ -120,9 +122,6 @@ int main()
             // операция объединения интервалов
             cout << "объединение интервалов: " << endl;
             inter1.interUnion(inter2);
-
-            // вывод пересечения интервалов
-            // вывод объединения интервалов
         }
         else if (command == 2)
             break;
@@ -131,5 +130,3 @@ int main()
     }
     return 0;
 }
-
-
