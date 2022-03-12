@@ -1,0 +1,1 @@
+CMakeLists.txt not found in C:\Users\the80hz\repos\Laba2_var2\Daniil Select CMakeLists.txt
