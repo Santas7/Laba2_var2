@@ -2,30 +2,30 @@
 
 class interval{
 private:
-    double left, right;
+    int left, right;
 
 public:
-    void setLeft(double value){left = value;}
-    void setRight(double value){right = value;}
-    double getLeft() const{return left;}
-    double getRight() const{return right;}
+    void setLeft(int value){left = value;}
+    void setRight(int value){right = value;}
+    int getLeft() const{return left;}
+    int getRight() const{return right;}
 
     void print() const{
-        printf("(%g;%g)", left, right);
+        printf("(%d;%d)", left, right);
     }
 
     void enterLeft(){
-        double value;
+        int value;
         printf("Left: ");
-        scanf("%lf", &value);
+        scanf("%d", &value);
         left = value;
     }
 
     void enterRight(){
-        double value;
+        int value;
         while(true){
             printf("Right: ");
-            scanf("%lf", &value);
+            scanf("%d", &value);
             if(value < left){
                 printf("\x1B[31mThe right number must be greater than the left one!\n\033[0m");
             }
@@ -38,13 +38,32 @@ public:
 };
 
 interval intersection(interval i1, interval i2){
-    interval cross{};
-    cross.setLeft(0);
-    cross.setRight(0);
+    interval crossed{};
 
-    
+    int i1_left = i1.getLeft();
+    int i1_right = i1.getRight();
+    int i2_left = i2.getLeft();
+    int i2_right = i2.getRight();
 
-    return cross;
+    if(i1_right < i2_left){
+        crossed.setLeft(0);
+        crossed.setRight(0);
+        return crossed;
+    }
+
+
+
+    return crossed;
+}
+
+interval combining(interval i1, interval i2){
+    interval combined{};
+    combined.setLeft(0);
+    combined.setRight(0);
+
+
+
+    return combined;
 }
 
 int main(){
@@ -63,6 +82,12 @@ int main(){
     i2.enterRight();
     printf("The second interval: ");
     i2.print();
+    printf("\n\n");
+
+    // intersection of intervals
+    interval crossed{};
+    crossed = intersection(i1, i2);
+    crossed.print();
 
 
 
