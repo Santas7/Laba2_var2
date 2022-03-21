@@ -39,8 +39,8 @@ public:
 
 interval intersection(interval i1, interval i2){
     interval crossed{};
-    crossed.setLeft(0);
-    crossed.setRight(0);
+    crossed.setLeft(-1);
+    crossed.setRight(-1);
 
     double i1_left = i1.getLeft();
     double i1_right = i1.getRight();
@@ -48,16 +48,41 @@ interval intersection(interval i1, interval i2){
     double i2_right = i2.getRight();
 
     // if two intervals do not cross
-    if(i1_right < i2_left){
+    if(i1_right < i2_left || i1_left > i2_right){
         crossed.setLeft(0);
         crossed.setRight(0);
         return crossed;
     }
 
-    // if two intervals are equal
-    if(i1_left == i2_left && i1_right == i2_right){
-        crossed.setLeft(i1_left);
-        crossed.setRight(i1_right);
+    // if some ends are equal
+    if(i1_left == i2_left || i1_right == i2_right){
+        // (10;20) X (15;20)
+        if (i1_left < i2_left){
+            crossed.setLeft(i2_left);
+            crossed.setRight(i1_right);
+            return crossed;
+        }
+        // (15;20) X (10;20)
+        if (i1_left > i2_left){
+            crossed.setLeft(i1_left);
+            crossed.setRight(i1_right);
+            return crossed;
+        }
+        // (10;20) X (10;25)
+        if(i1_right < i2_right){
+            crossed.setLeft(i1_left);
+            crossed.setRight(i1_right);
+            return crossed;
+        }
+        // (10;20) X (10;15)
+        if(i1_right > i2_right){
+            crossed.setLeft(i1_left);
+            crossed.setRight(i2_right);
+            return crossed;
+        }
+        // if two intervals are equal
+        crossed.setLeft(0);
+        crossed.setRight(0);
         return crossed;
     }
 
@@ -69,23 +94,23 @@ interval intersection(interval i1, interval i2){
             return crossed;
         }
         // (10;25) X (15;20)
-        else if(i2_right < i1_right){
+        if(i1_right > i2_right){
             crossed.setLeft(i2_left);
             crossed.setRight(i2_right);
             return crossed;
         }
     }
-    else if(i2_left < i1_left){
-        // (15;25) X (10;20)
-        if(i2_right < i1_right){
-            crossed.setLeft(i1_left);
-            crossed.setRight(i2_right);
-            return crossed;
-        }
+    else if(i1_left > i2_left){
         // (15:20) x (10;25)
-        else if(i1_right < i2_right){
+        if(i1_right < i2_right){
             crossed.setLeft(i1_left);
             crossed.setRight(i1_right);
+            return crossed;
+        }
+        // (15;25) X (10;20)
+        if(i1_right > i2_right){
+            crossed.setLeft(i1_left);
+            crossed.setRight(i2_right);
             return crossed;
         }
     }
@@ -117,8 +142,12 @@ interval combining(interval i1, interval i2){
         return combined;
     }
 
-    // (10;15) U ()
-    if(i1_left)
+    // (10;20) U (15;25)
+    if(i1_left < i2_left && i1_right < i2_right){
+        combined.setLeft(i1_left);
+        combined.setRight(i1_right);
+        return combined;
+    }
 
     return combined;
 }
