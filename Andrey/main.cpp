@@ -1,60 +1,85 @@
 /** Документация к программе
 	ФИО: Панюшкин Андрей Михайлович
 	номер группы: 6113
+	вариант: 17(2)
 **/
-
+#include <windows.h>
 #include <iostream>
 
 using namespace std;
 
 class WorkInterval{
 private:
-    double left, right;
+    double left{}, right{};
 public:
-    void printRes(double var)
+    void printOperations() const
     {
-        cout << var << "\t";
+        cout << "(" << left << ";" << right << ")";
     }
-    void interUnion(WorkInterval inter2) 
+	
+    int statusCheck(int status,WorkInterval inter2) const
     {
-        double min = left;
-        double max = right;
-        if(inter2.left < min) min = inter2.left;
-        if(inter2.right > max) max = inter2.right;
-        while(min < max-1){
-            min++;
-            printRes(min);
+        if(inter2.left > right && inter2.right > right) status = 1;
+        return status;
+    }
+	
+    WorkInterval interUnion(WorkInterval inter2, WorkInterval ans) const
+    {
+        if(right < inter2.right && right > inter2.left && left < inter2.left){
+            ans.left = left;
+            ans.right = inter2.right;
         }
-    }
-    void interSection(WorkInterval inter2)
-    {
-        double tmp = inter2.left;
-        double tmpleft = left;
-        double tmpright = right;
-        while(left < right-1){
-            left++;
-            inter2.left = tmp;
-            while(inter2.left < inter2.right-1){
-                inter2.left++;
-                if(inter2.left == left) printRes(left);
-            }
+        else if(right < inter2.right && left > inter2.left){
+            ans.left = inter2.left;
+            ans.right = right;
         }
-        left = tmpleft;
-        right = tmpright;
-        inter2.left = tmp;
+        else if (right > inter2.right && left > inter2.left) {
+            ans.left = inter2.left;
+            ans.right = right;
+        }
+        else if(right > inter2.right && inter2.left > left){
+            ans.left = left;
+            ans.right = right;
+        }
+        return ans;
     }
-
-    void print()
+	
+    WorkInterval interSection(WorkInterval inter2, WorkInterval ans) const
+    {
+        if(right < inter2.right && right > inter2.left && left < inter2.left){
+                ans.left = inter2.left;
+                ans.right = right;
+        }
+        else if(right < inter2.right && left > inter2.left){
+            ans.left = left;
+            ans.right = right;
+        }
+        else if (right > inter2.right && left > inter2.left) {
+            ans.left = left;
+            ans.right = inter2.right;
+        }
+        else if(right > inter2.right && inter2.left > left){
+            ans.left = inter2.left;
+            ans.right = inter2.right;
+        }
+        else {
+            ans.left=0;
+            ans.right=0;
+        }
+        return ans;
+    }
+	
+    void print() const
     {
         cout << "(" << left << ";" << right << ")" << endl;
     }
-    // Set() + Get()
-    void setLeft(double left){this->left = left;}
-    double getLeft(double left){return left;}
-    void setRight(double right){this->right = right;}
-    double getRight(double right){return right;}
+	
+    void setLeft(double l){left = l;}
+    static double getLeft(double left){return left;}
+    void setRight(double r){right = r;}
+    static double getRight(double right){return right;}
 
-    WorkInterval(double left = 0, double right = 0) // конструктор
+    explicit WorkInterval(double left = 0, double right = 0) // конструктор
     {
         setLeft(left); setRight(right);
     }
@@ -82,8 +107,9 @@ double inputRightInterval(double left, double right) // ввод правого 
 }
 int main()
 {
+    SetConsoleOutputCP(CP_UTF8); //Задает выходную кодовую страницу,
     cout << "|____________________________________________________|" << endl;
-    cout << "|     Лабораторная работа номер 2 ( 17 вариант(2) )     |" << endl;
+    cout << "|     Лабораторная работа номер 2 ( 17 вариант(2) )  |" << endl;
     cout << "|____________________________________________________|" << endl;
     while (true) // главное меню
     {
@@ -92,9 +118,12 @@ int main()
         cin >> command;
         if (command == 1)
         {
-            double left, right;
+            double left = 0, right = 0;
+            int status;
             WorkInterval inter1;
             WorkInterval inter2;
+            WorkInterval ans;
+		
             // ввод первого интервала
             cout << "1 интервал-->" << endl;
             cout << "left: ";
@@ -102,7 +131,7 @@ int main()
             right = inputRightInterval(left, right);
             inter1.setLeft(left);
             inter1.setRight(right);
-
+		
             // ввод второго интервала
             cout << "2 интервал-->" << endl;
             cout << "left: ";
@@ -110,18 +139,34 @@ int main()
             right = inputRightInterval(left, right);
             inter2.setLeft(left);
             inter2.setRight(right);
-
+		
             // вывод интервалов
             inter1.print(); inter2.print();
-
-            // операция пересечения интервалов
+		
+            // операция пересечения
+            ans = inter1.interSection(inter2, ans);
+		
+            // вывод пересечения
             cout << "пересечение интервалов: " << endl;
-            inter1.interSection(inter2);
+            ans.printOperations();
             cout << endl;
-
-            // операция объединения интервалов
+		
+            // операция объединения
+            ans = inter1.interUnion(inter2, ans);
+		
+            // вывод объединения
+            status = inter1.statusCheck(status, inter2);
             cout << "объединение интервалов: " << endl;
-            inter1.interUnion(inter2);
+            if(status != 1){
+                ans.printOperations();
+                status = 0;
+            }
+            else{
+                inter1.printOperations();
+                cout << "\t" << "U" << "\t";
+                inter2.printOperations();
+                status = 0;
+            }
         }
         else if (command == 2)
             break;
