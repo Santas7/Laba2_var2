@@ -3,8 +3,10 @@
 class interval{
 private:
     double left, right;
+    bool printIt = true;
 
 public:
+    void setPrintIt(bool value){printIt = value;}
     void setLeft(double value){left = value;}
     void setRight(double value){right = value;}
     double getLeft() const{return left;}
@@ -14,11 +16,13 @@ public:
         printf("(%g;%g)", left, right);
     }
 
-    void enterLeft(){
-        double value;
-        printf("Left: ");
-        scanf("%lf", &value);
-        left = value;
+    void enterLeft(bool printIt = true){
+        if(printIt){
+            double value;
+            printf("Left: ");
+            scanf("%lf", &value);
+            left = value;
+        }
     }
 
     void enterRight(){
@@ -120,8 +124,9 @@ interval intersection(interval i1, interval i2){
 
 interval combining(interval i1, interval i2){
     interval combined{};
-    combined.setLeft(0);
-    combined.setRight(0);
+    combined.setLeft(-1);
+    combined.setRight(-1);
+    combined.setPrintIt(true);
 
     double i1_left = i1.getLeft();
     double i1_right = i1.getRight();
@@ -129,24 +134,81 @@ interval combining(interval i1, interval i2){
     double i2_right = i2.getRight();
 
     // if two intervals do not cross
-    if(i1_right < i2_left){
+    // (10;15) U (20;25)
+    if(i2_left > i1_right){
+        combined.setLeft(i1_left);
+        combined.setRight(i1_right);
+        printf("\n(%g;%g) U (%g;%g)", i1_left, i1_right, i2_left, i2_right);
+        combined.setPrintIt(false);
+        return combined;
+    }
+    // (20;25) U (10;15)
+    if(i1_right > i1_left){
+        combined.setLeft(i1_left);
+        combined.setRight(i1_right);
+        printf("\n(%g;%g) U (%g;%g)", i1_left, i1_right, i2_left, i2_right);
+        return combined;
+    }
+
+    // if some ends are equal
+    if(i1_left == i2_left || i1_right == i2_right){
+        // (10;20) U (15;20)
+        if (i1_left < i2_left){
+            combined.setLeft(i1_left);
+            combined.setRight(i1_right);
+            return combined;
+        }
+        // (15;20) U (10;20)
+        if (i1_left > i2_left){
+            combined.setLeft(i2_left);
+            combined.setRight(i1_right);
+            return combined;
+        }
+        // (10;20) U (10;25)
+        if(i1_right < i2_right){
+            combined.setLeft(i1_left);
+            combined.setRight(i2_right);
+            return combined;
+        }
+        // (10;20) U (10;15)
+        if(i1_right > i2_right){
+            combined.setLeft(i1_left);
+            combined.setRight(i1_right);
+            return combined;
+        }
+        // if two intervals are equal
         combined.setLeft(0);
         combined.setRight(0);
         return combined;
     }
 
-    // if two intervals are equal
-    if(i1_left == i2_left && i1_right == i2_right){
-        combined.setLeft(i1_left);
-        combined.setRight(i1_right);
-        return combined;
+    if(i1_left < i2_left){
+        // (10;20) U (15;25)
+        if(i1_right < i2_right){
+            combined.setLeft(i1_left);
+            combined.setRight(i2_right);
+            return combined;
+        }
+        // (10;25) U (15;20)
+        if(i1_right > i2_right){
+            combined.setLeft(i1_left);
+            combined.setRight(i2_right);
+            return combined;
+        }
     }
-
-    // (10;20) U (15;25)
-    if(i1_left < i2_left && i1_right < i2_right){
-        combined.setLeft(i1_left);
-        combined.setRight(i1_right);
-        return combined;
+    else if(i1_left > i2_left){
+        // (15;20) U (10;25)
+        if(i1_right < i2_right){
+            combined.setLeft(i2_left);
+            combined.setRight(i2_right);
+            return combined;
+        }
+        // (15;25) U (10;20)
+        if(i1_right > i2_right){
+            combined.setLeft(i2_left);
+            combined.setRight(i1_right);
+            return combined;
+        }
     }
 
     return combined;
