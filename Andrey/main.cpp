@@ -52,15 +52,15 @@ public:
         }
         if(_left > _right){
             ans._left = _right;
-            ans._statusR = _statusR;
+            ans._statusL = _statusR;
         }
         else if (_left > inter2._right){
             ans._left = inter2._right;
-            ans._statusR = inter2._statusR;
+            ans._statusL = inter2._statusR;
         }
         else if(_left > inter2._left){
             ans._left = inter2._left;
-            ans._statusR = inter2._statusL;
+            ans._statusL = inter2._statusL;
         }
         return ans;
     }
@@ -95,6 +95,12 @@ public:
             ans._left = _left;
             ans._right = inter2._right;
             ans._statusL = _statusL;
+            ans._statusR = inter2._statusR;
+        }
+        else if(_right == inter2._right && inter2._left > _left){
+            ans._left = inter2._left;
+            ans._right = inter2._right;
+            ans._statusL = inter2._statusL;
             ans._statusR = inter2._statusR;
         }
         else if(_left == inter2._left && inter2._right > _right){
