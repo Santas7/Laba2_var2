@@ -35,9 +35,9 @@ public:
     {
         WorkInterval ans;
         ans._right = _right;
+        ans._statusR = _statusR;
         ans._left = _left;
         ans._statusL = _statusL;
-        ans._statusR = _statusR;
         if(ans._right < inter2._left){
             ans._right = inter2._left;
             ans._statusR = inter2._statusL;
@@ -50,6 +50,7 @@ public:
             ans._right = inter2._right;
             ans._statusR = inter2._statusR;
         }
+
         if(_left > _right){
             ans._left = _right;
             ans._statusL = _statusR;
@@ -104,11 +105,19 @@ public:
             ans._statusR = inter2._statusR;
         }
         else if(_left == inter2._left && inter2._right > _right){
-            ans._left = _left;
             ans._right = _right;
-            ans._statusL = _statusL;
-            ans._statusR = _statusR;
+            if(!_statusL && inter2._statusL){
+                ans._left = _left;
+                ans._statusL = _statusL;
+                ans._statusR = _statusR;
+            }
+            else{
+                ans._left = inter2._left;
+                ans._statusL = inter2._statusL;
+                ans._statusR = _statusR;
+            }
         }
+
         else {
             ans._left=0;
             ans._right=0;
