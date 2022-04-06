@@ -35,35 +35,45 @@ public:
     {
         WorkInterval ans;
         ans._right = _right;
-        ans._statusR = _statusR;
         ans._left = _left;
+        ans._statusR = _statusR;
         ans._statusL = _statusL;
-        if(ans._right < inter2._left){
-            ans._right = inter2._left;
-            ans._statusR = inter2._statusL;
+        if (_left > inter2._right && _right > inter2._left){
+            ans._right = 0;
+            ans._left = 0;
+            ans._statusR = false;
+            ans._statusL = false;
+            return ans;
         }
-        else if (ans._right < _left){
-            ans._right = _left;
-            ans._statusR = _statusL;
-        }
-        else if(ans._right < inter2._right){
-            ans._right = inter2._right;
-            ans._statusR = inter2._statusR;
+        else{
+            if(ans._right < inter2._left){
+                ans._right = inter2._left;
+                ans._statusR = inter2._statusL;
+            }
+            else if (ans._right < _left){
+                ans._right = _left;
+                ans._statusR = _statusL;
+            }
+            else if(ans._right < inter2._right){
+                ans._right = inter2._right;
+                ans._statusR = inter2._statusR;
+            }
+
+            if(_left > _right){
+                ans._left = _right;
+                ans._statusL = _statusR;
+            }
+            else if (_left > inter2._right){
+                ans._left = inter2._right;
+                ans._statusL = inter2._statusR;
+            }
+            else if(_left > inter2._left){
+                ans._left = inter2._left;
+                ans._statusL = inter2._statusL;
+            }
+            return ans;
         }
 
-        if(_left > _right){
-            ans._left = _right;
-            ans._statusL = _statusR;
-        }
-        else if (_left > inter2._right){
-            ans._left = inter2._right;
-            ans._statusL = inter2._statusR;
-        }
-        else if(_left > inter2._left){
-            ans._left = inter2._left;
-            ans._statusL = inter2._statusL;
-        }
-        return ans;
     }
 
     WorkInterval interSection(WorkInterval inter2, WorkInterval ans) const
@@ -80,7 +90,7 @@ public:
             ans._statusL = _statusL;
             ans._statusR = _statusR;
         }
-        else if (_right > inter2._right && _left > inter2._left) {
+        else if (_right > inter2._right && _left < inter2._left) {
             ans._left = _left;
             ans._right = inter2._right;
             ans._statusL = _statusL;
