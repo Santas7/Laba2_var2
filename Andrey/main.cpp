@@ -3,28 +3,16 @@
 
 using namespace std;
 
-class WorkInterval{
+class WorkInterval {
 private:
     double _left, _right;
     bool _statusR, _statusL;
 public:
-    bool statusCheckUnionAndPrint(bool status) const
-    {
-        cout << "объединение интервалов: " << endl;
-        if(status != 1){
-            print();
-            status = false;
-        }
-        else{
-            cout << "(0;0)"<< endl;
-            status = false;
-        }
-        return status;
-    }
+
     bool statusCheck(WorkInterval inter2) const
     {
         bool status;
-        if(inter2._left > _right && inter2._right > _right)
+        if (inter2._left > _right && inter2._right > _right)
             status = true;
         else
             status = false;
@@ -34,148 +22,122 @@ public:
     WorkInterval interUnion(WorkInterval inter2) const
     {
         WorkInterval ans;
-        ans._right = _right;
-        ans._left = _left;
-        ans._statusR = _statusR;
-        ans._statusL = _statusL;
-        if (_left > inter2._right && _right > inter2._left){
+        if (_left > inter2._right && _right > inter2._left) { // проверка на объединение интервалов
             ans._right = 0;
             ans._left = 0;
             ans._statusR = false;
             ans._statusL = false;
             return ans;
         }
-        else{
-            if(ans._right < inter2._left){
-                ans._right = inter2._left;
-                ans._statusR = inter2._statusL;
-            }
-            else if (ans._right < _left){
-                ans._right = _left;
-                ans._statusR = _statusL;
-            }
-            else if(ans._right < inter2._right){
-                ans._right = inter2._right;
-                ans._statusR = inter2._statusR;
-            }
-
-            if(_left > _right){
-                ans._left = _right;
-                ans._statusL = _statusR;
-            }
-            else if (_left > inter2._right){
-                ans._left = inter2._right;
-                ans._statusL = inter2._statusR;
-            }
-            else if(_left > inter2._left){
-                ans._left = inter2._left;
-                ans._statusL = inter2._statusL;
-            }
-            return ans;
+        //for left
+        if (_left > inter2._left) {
+            ans._left = inter2._left;
+            ans._statusL = inter2._statusL;
         }
-
+        else if (_left < inter2._left) {
+            ans._left = _left;
+            ans._statusL = _statusL;
+        }
+        else {
+            ans._left = _left;
+            ans._statusL = _statusL || inter2._statusL; // true || false = true
+        }
+        //for right
+        if (_right > inter2._right) {   
+            ans._right = _right;
+            ans._statusR = _statusR;
+        }
+        else if (_right < inter2._right) {
+            ans._right = inter2._right;
+            ans._statusR = inter2._statusR;
+        }
+        else {
+            ans._right = _right;
+            ans._statusR = _statusR || inter2._statusR; // true || false = true
+        }
+      
+        return ans;
     }
 
     WorkInterval interSection(WorkInterval inter2, WorkInterval ans) const
     {
-        if(_right < inter2._right && _right > inter2._left && _left < inter2._left){
-            ans._left = inter2._left;
-            ans._right = _right;
-            ans._statusL = inter2._statusL;
-            ans._statusR = _statusR;
-        }
-        else if(_right < inter2._right && _left > inter2._left){
-            ans._left = _left;
-            ans._right = _right;
-            ans._statusL = _statusL;
-            ans._statusR = _statusR;
-        }
-        else if (_right > inter2._right && _left < inter2._left) {
-            ans._left = _left;
-            ans._right = inter2._right;
-            ans._statusL = _statusL;
-            ans._statusR = inter2._statusR;
-        }
-        else if(_right > inter2._right && inter2._left > _left){
-            ans._left = inter2._left;
-            ans._right = inter2._right;
-            ans._statusL = inter2._statusL;
-            ans._statusR = inter2._statusR;
-        }
-        else if(_right == inter2._left && inter2._right > _left){
-            ans._left = _left;
-            ans._right = inter2._right;
-            ans._statusL = _statusL;
-            ans._statusR = inter2._statusR;
-        }
-        else if(_right == inter2._right && inter2._left > _left){
-            ans._left = inter2._left;
-            ans._right = inter2._right;
-            ans._statusL = inter2._statusL;
-            ans._statusR = inter2._statusR;
-        }
-        else if(_left == inter2._left && inter2._right > _right){
-            ans._right = _right;
-            if(!_statusL && inter2._statusL){
-                ans._left = _left;
-                ans._statusL = _statusL;
-                ans._statusR = _statusR;
-            }
-            else{
-                ans._left = inter2._left;
-                ans._statusL = inter2._statusL;
-                ans._statusR = _statusR;
-            }
-        }
-
-        else {
-            ans._left=0;
-            ans._right=0;
+        if (_left > inter2._right && inter2._left > _right) { // проверка на пересечение интервалов
+            ans._left = 0;
+            ans._right = 0;
             ans._statusL = false;
             ans._statusR = false;
+            return ans;
+        }
+            // for left
+        if (_left > inter2._left) {
+            ans._left = _left;
+            ans._statusL = _statusL;
+        }
+        else if (_left < inter2._left) {
+            ans._left = inter2._left;
+            ans._statusL = inter2._statusL;
+        }
+        else {
+            ans._left = _left;
+            ans._statusL = _statusL && inter2._statusL; // bool1 and bool2 = ?
+        }
+            // for right
+        if (_right > inter2._right) {
+            ans._right = inter2._right;
+            ans._statusR = inter2._statusR;
+        }
+        else if (_right < inter2._right) {
+            ans._right = _right;
+            ans._statusR = _statusR;
+        }
+        else {
+            ans._right = _right;
+            ans._statusR = _statusR && inter2._statusR; // bool1 and bool2 = ?
         }
         return ans;
     }
-
     void print() const
     {
-        if(!_statusL)
+        if (!_statusL)
             cout << "(";
         else
             cout << "[";
         cout << _left << ";" << _right;
-        if(!_statusR)
+        if (!_statusR)
             cout << ")" << endl;
         else
             cout << "]" << endl;
     }
-
-    void setLeft(double value){_left = value;}
-    static double getLeft(double _left){return _left;}
-    void setRight(double value){_right = value;}
-    static double getRight(double _right){return _right;}
-    void setR(double value){_statusR = value;}
-    void setL(double value){_statusL = value;}
+    void setLeft(double value) { _left = value; }
+    double getLeft(double _left) { return _left; }
+    void setRight(double value) { _right = value; }
+    double getRight(double _right) { return _right; }
+    void setR(bool value) { _statusR = value; }
+    void setL(bool value) { _statusL = value; }
     explicit WorkInterval(double left = 0, double right = 0, bool statusL = false, bool statusR = false)
-            : _left(left), _right(right), _statusL(statusL), _statusR(statusR)// конструктор
+        : _left(left), _right(right), _statusL(statusL), _statusR(statusR)// конструктор
     {
     }
 };
-double inputLeftInterval(double left) // ввод левого конца интервала
+
+//behind class
+
+double inputLeftInterval() // ввод левого конца интервала
 {
+    double left;
     cin >> left;
     return left;
 }
-double inputRightInterval(double left, double right) // ввод правого конца интервала
+double inputRightInterval(double left) // ввод правого конца интервала
 {
+    double right;
     while (true)
     {
-        cout << "правый конец интервала: ";
         cin >> right;
         cout << endl;
         if (right < left)
         {
-            cout << "Левый конец должен быть < правого конца!";
+            cout << "Левый конец должен быть < правого конца!" << endl << "правый конец интервала: ";
         }
         else
             break;
@@ -186,19 +148,19 @@ bool statusLeft()
 {
     bool status;
     char str[1] = "";
-    while(true){
+    while (true) {
         cout << "левая скобка: ";
         cin >> str[0];
-        if(str[0] == '('){
+        if (str[0] == '(') {
             status = false;
             break;
         }
-        else if(str[0] == '['){
+        else if (str[0] == '[') {
             status = true;
             break;
         }
         else
-            cout << "Вы ввели неверный символ! Повторите еще разок!";
+            cout << "Вы ввели неверный символ! Повторите еще разок!" << endl;
     }
     return status;
 }
@@ -206,14 +168,14 @@ bool statusRight()
 {
     bool status;
     char str[1] = "";
-    while(true){
+    while (true) {
         cout << "правая скобка: ";
         cin >> str[0];
-        if(str[0] == ')'){
+        if (str[0] == ')') {
             status = false;
             break;
         }
-        else if(str[0] == ']'){
+        else if (str[0] == ']') {
             status = true;
             break;
         }
@@ -224,7 +186,7 @@ bool statusRight()
 }
 int main()
 {
-    SetConsoleOutputCP(CP_UTF8); //Задает выходную кодовую страницу,
+    setlocale(LC_ALL, "Rus");
     cout << "|____________________________________________________|" << endl;
     cout << "|     Лабораторная работа номер 2 ( 17 вариант(2) )  |" << endl;
     cout << "|____________________________________________________|" << endl;
@@ -236,7 +198,7 @@ int main()
         if (command == 1)
         {
             double left = 0, right = 0;
-            bool status = false;
+            bool status;
             WorkInterval inter1;
             WorkInterval inter2;
             WorkInterval ans;
@@ -246,8 +208,9 @@ int main()
             status = statusLeft();
             inter1.setL(status);
             cout << "левый конец интервала: ";
-            left = inputLeftInterval(left);
-            right = inputRightInterval(left, right);
+            left = inputLeftInterval();
+            cout << "правый конец интервала: ";
+            right = inputRightInterval(left);
             status = statusRight();
             inter1.setR(status);
             inter1.setLeft(left);
@@ -258,8 +221,9 @@ int main()
             status = statusLeft();
             inter2.setL(status);
             cout << "левый конец интервала: ";
-            left = inputLeftInterval(left);
-            right = inputRightInterval(left, right);
+            left = inputLeftInterval();
+            cout << "правый конец интервала: ";
+            right = inputRightInterval(left);
             status = statusRight();
             inter2.setR(status);
             inter2.setLeft(left);
@@ -282,13 +246,20 @@ int main()
 
             // вывод объединения
             status = inter1.statusCheck(inter2);
-            status = ans.statusCheckUnionAndPrint(status);
-
+            cout << "объединение интервалов: " << endl;
+            if (status != 1) {
+                ans.print();
+                status = false;
+            }
+            else {
+                cout << "(0;0)" << endl;
+                status = false;
+            }
         }
         else if (command == 2)
             break;
         else
-            cout << "Ошибка! Не могу найти такой команды! Попробуйте еще раз!" << endl;
+            cout << "Ошибка! Не могу найти такой команды! Попробуйте еще раз!";
     }
     return 0;
 }
