@@ -3,4 +3,4 @@ project(Daniil)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(Daniil main.cpp)
+add_executable(Daniil main.cpp interval.cpp interval.h)
